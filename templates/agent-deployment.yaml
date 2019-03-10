@@ -22,11 +22,11 @@ spec:
       volumes:
           - name: agent-data
             persistentVolumeClaim:
-              {{- if .Values.persistence.existingDataClaim }}
+#              {{- if .Values.persistence.existingDataClaim }}
               claimName: {{ .Values.persistence.agentExistingDataClaim}}
-              {{- else }}
-              claimName: {{ default (include "teamcity.fullname" .) }}-agent-data
-              {{- end -}}
+#              {{- else }}
+#              claimName: {{ default (include "teamcity.fullname" .) }}-agent-data
+#              {{- end -}}
       containers:
         - name: {{ .Chart.Name }}-agent
           image: "{{ .Values.agent.image.repository }}:{{ .Values.agent.image.tag }}"
