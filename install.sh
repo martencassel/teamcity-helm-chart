@@ -48,7 +48,7 @@ spec:
     - ReadWriteOnce
   hostPath:
     path: "/mnt/data"
-EOF 
+EOF
 
 cat <<EOF | kubectl create -f -
 kind: PersistentVolumeClaim
