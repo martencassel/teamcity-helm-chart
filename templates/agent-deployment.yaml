@@ -18,16 +18,23 @@ spec:
       labels:
         app: {{ template "teamcity.name" . }}-agent
         release: {{ .Release.Name }}
+      annotations:
+        container.apparmor.security.beta.kubernetes.io/buildkitd: unconfined
     spec:
       volumes:
           - name: agent-data
             persistentVolumeClaim:
-#              {{- if .Values.persistence.existingDataClaim }}
               claimName: {{ .Values.persistence.agentExistingDataClaim}}
-#              {{- else }}
-#              claimName: {{ default (include "teamcity.fullname" .) }}-agent-data
-#              {{- end -}}
       containers:
+        - image: moby/buildkit:rootless
+          args:
+          - --addr
+          - tcp://0.0.0.0:1234
+          name: buildkitd
+          ports:
+          - containerPort: 1234
+          securityContext: 
+            procMount: unmasked
         - name: {{ .Chart.Name }}-agent
           image: "{{ .Values.agent.image.repository }}:{{ .Values.agent.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
