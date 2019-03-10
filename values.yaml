@@ -30,6 +30,10 @@ service:
   type: ClusterIP
   port: 8111
 
+persistence:
+    serverExistingDataClaim: teamcity-server-pv-volume
+    agentExistingDataClaim: teamcity-agent-pv-volume
+
 ingress:
   enabled: true
   annotations:
@@ -56,7 +60,8 @@ resources:
     cpu: 600m
     memory: 968Mi
 
-nodeSelector: {}
+nodeSelector:
+  teamcity: "server"
 
 tolerations: []
 

@@ -22,7 +22,11 @@ spec:
       volumes:
           - name: agent-data
             persistentVolumeClaim:
+              {{- if .Values.persistence.existingDataClaim }}
+              claimName: {{ .Values.persistence.agentExistingDataClaim}}
+              {{- else }}
               claimName: {{ default (include "teamcity.fullname" .) }}-agent-data
+              {{- end -}}
       containers:
         - name: {{ .Chart.Name }}-agent
           image: "{{ .Values.agent.image.repository }}:{{ .Values.agent.image.tag }}"
@@ -30,6 +34,8 @@ spec:
           env:
             - name: SERVER_URL
               value: "http://{{ template "teamcity.fullname" . }}:8111"
+            - name: RUN_AS_BUILDAGENT
+              value: "true"
           volumeMounts:
             - name:  agent-data
               mountPath: /data/teamcity_agent/conf
